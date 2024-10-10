@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.3.4</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.example</groupId>
+	<artifactId>k6-to-artemismq</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>k6-to-artemismq</name>
+	<description>Java Stub get Json from k6 and send it to artemismq through amqp</description>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+	</properties>
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>3.3.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-jms-client</artifactId>
+			<version>0.42.0</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>artemis-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create</id>
+						<goals>
+							<goal>create</goal>
+						</goals>
+						<configuration>
+							<ignore>${noServer}</ignore>
+						</configuration>
+					</execution>
+					<execution>
+						<id>start</id>
+						<goals>
+							<goal>cli</goal>
+						</goals>
+						<configuration>
+							<ignore>${noServer}</ignore>
+							<spawn>true</spawn>
+							<testURI>tcp://localhost:61616</testURI>
+							<args>
+								<param>run</param>
+							</args>
+						</configuration>
+					</execution>
+					<execution>
+						<id>runClient</id>
+						<goals>
+							<goal>runClient</goal>
+						</goals>
+						<configuration>
+							<clientClass>org.apache.activemq.artemis.jms.example.AMQPQueueExample</clientClass>
+						</configuration>
+					</execution>
+					<execution>
+						<id>stop</id>
+						<goals>
+							<goal>cli</goal>
+						</goals>
+						<configuration>
+							<ignore>${noServer}</ignore>
+							<args>
+								<param>stop</param>
+							</args>
+						</configuration>
+					</execution>
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.activemq.examples.amqp</groupId>
+						<artifactId>queue</artifactId>
+						<version>${project.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
